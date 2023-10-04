@@ -30,6 +30,7 @@ class Program
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine($"Recibido en Direct: '{message}'");
+                throw new ArgumentException("Error de prueba");
             };
 
             channel.BasicConsume(queue: queueNameDirect,
@@ -38,8 +39,8 @@ class Program
 
             // Tipo topic
             channel.ExchangeDeclare("topic_exchange", ExchangeType.Topic, true);
-            var queueNameTopic1 = channel.QueueDeclare().QueueName;
-            var queueNameTopic2 = channel.QueueDeclare().QueueName;
+            var queueNameTopic1 = channel.QueueDeclare("queue.topic1", true, false, false).QueueName;
+            var queueNameTopic2 = channel.QueueDeclare("queue.topic2", true, false, false).QueueName;
             channel.QueueBind(queueNameTopic1, "topic_exchange", "topic.routing.*");
             channel.QueueBind(queueNameTopic2, "topic_exchange", "*.routing.key");
 
@@ -69,9 +70,9 @@ class Program
 
             // Tipo fanout
             channel.ExchangeDeclare("fanout_exchange", ExchangeType.Fanout, true);
-            var queueNameFanout1 = channel.QueueDeclare().QueueName;
-            var queueNameFanout2 = channel.QueueDeclare().QueueName;
-            var queueNameFanout3 = channel.QueueDeclare().QueueName;
+            var queueNameFanout1 = channel.QueueDeclare("queue.fanout1", true, false, false).QueueName;
+            var queueNameFanout2 = channel.QueueDeclare("queue.fanout2", true, false, false).QueueName;
+            var queueNameFanout3 = channel.QueueDeclare("queue.fanout3", true, false, false).QueueName;
 
             channel.QueueBind(queueNameFanout1, "fanout_exchange", "");
             channel.QueueBind(queueNameFanout2, "fanout_exchange", "");

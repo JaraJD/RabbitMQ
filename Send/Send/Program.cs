@@ -19,8 +19,8 @@ class Program
         {
             // Exchange directo
             channel.ExchangeDeclare("direct_exchange", ExchangeType.Direct, true);
-            //channel.QueueDeclare("queue.direct", true, false ,false);
-            //channel.QueueBind("queue.direct", "direct_exchange", "direct_routing_key");
+            channel.QueueDeclare("queue.direct", true, false ,false);
+            channel.QueueBind("queue.direct", "direct_exchange", "direct_routing_key");
             var message = "Mensaje para el exchange directo";
             var body = Encoding.UTF8.GetBytes(message);
             channel.BasicPublish("direct_exchange", "direct_routing_key", null, body);
@@ -28,10 +28,10 @@ class Program
 
             // Exchange topic
             channel.ExchangeDeclare("topic_exchange", ExchangeType.Topic, true);
-            //channel.QueueDeclare("queue.topic1", true, false, false);
-            //channel.QueueDeclare("queue.topic2", true, false, false);
-            //channel.QueueBind("queue.topic1", "topic_exchange", "topic.routing.key1");
-            //channel.QueueBind("queue.topic2", "topic_exchange", "topic.routing.queue.key2");
+            channel.QueueDeclare("queue.topic1", true, false, false);
+            channel.QueueDeclare("queue.topic2", true, false, false);
+            channel.QueueBind("queue.topic1", "topic_exchange", "topic.routing.key1");
+            channel.QueueBind("queue.topic2", "topic_exchange", "topic.routing.queue.key2");
             var message1 = "Mensaje para el exchange de tipo topic1";
             var message2 = "Mensaje para el exchange de tipo topic2";
             var message3 = "Mensaje para ambas colas que estan conectadas al exchange de tipo topic";
@@ -45,16 +45,18 @@ class Program
             Console.WriteLine($"Enviado: '{message2}'");
             Console.WriteLine($"Enviado: '{message3}'");
 
-            // Exchange fanout
-            //channel.ExchangeDeclare("fanout_exchange", ExchangeType.Fanout, true);
-            ////channel.QueueDeclare("queue.fanout1", true, false, false);
-            ////channel.QueueDeclare("queue.fanout2", true, false, false);
-            ////channel.QueueBind("queue.fanout1", "fanout_exchange", "");
-            ////channel.QueueBind("queue.fanout2", "fanout_exchange", "");
-            //var message4 = "Mensaje para el exchange de tipo fanout";
-            //var body4 = Encoding.UTF8.GetBytes(message4);
-            //channel.BasicPublish("fanout_exchange", "", null, body4);
-            //Console.WriteLine($"Enviado: '{message4}'");
+            //Exchange fanout
+            channel.ExchangeDeclare("fanout_exchange", ExchangeType.Fanout, true);
+            channel.QueueDeclare("queue.fanout1", true, false, false);
+            channel.QueueDeclare("queue.fanout2", true, false, false);
+            channel.QueueDeclare("queue.fanout3", true, false, false);
+            channel.QueueBind("queue.fanout1", "fanout_exchange", "");
+            channel.QueueBind("queue.fanout2", "fanout_exchange", "");
+            channel.QueueBind("queue.fanout3", "fanout_exchange", "");
+            var message4 = "Mensaje para el exchange de tipo fanout";
+            var body4 = Encoding.UTF8.GetBytes(message4);
+            channel.BasicPublish("fanout_exchange", "", null, body4);
+            Console.WriteLine($"Enviado: '{message4}'");
         }
     }
 }
